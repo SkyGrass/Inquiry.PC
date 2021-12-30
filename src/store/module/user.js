@@ -105,6 +105,7 @@ export default {
           .then(res => {
             const data = res.data;
             if (data.code === 200 && data && data.data) {
+              setTagNavListInLocalstorage([]);
               commit("setToken", data.data);
             } else {
             }
