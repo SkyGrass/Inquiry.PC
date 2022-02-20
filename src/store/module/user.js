@@ -7,7 +7,7 @@ import {
   hasRead,
   removeReaded,
   restoreTrash,
-  getUnreadCount
+  getUnreadCount,
 } from "@/api/user";
 import { setToken, getToken, setTagNavListInLocalstorage } from "@/libs/util";
 import { getUnion } from "@/libs/tools";
@@ -29,7 +29,9 @@ export default {
     messageContentStore: {},
     permissions: {},
     profile: {},
-    billerId: ""
+    billerId: "",
+    personId: "",
+    partnerId: "",
   },
   mutations: {
     setAvator(state, avatorPath) {
@@ -46,6 +48,12 @@ export default {
     },
     setBillerId(state, billerId) {
       state.billerId = billerId;
+    },
+    setPersonId(state, personId) {
+      state.personId = personId;
+    },
+    setPartnerId(state, partnerId) {
+      state.partnerId = partnerId;
     },
     setAccess(state, access) {
       state.access = access;
@@ -81,17 +89,19 @@ export default {
       state.messageContentStore[msg_id] = content;
     },
     moveMsg(state, { from, to, msg_id }) {
-      const index = state[from].findIndex(_ => _.msg_id === msg_id);
+      const index = state[from].findIndex((_) => _.msg_id === msg_id);
       const msgItem = state[from].splice(index, 1)[0];
       msgItem.loading = false;
       state[to].unshift(msgItem);
-    }
+    },
   },
   getters: {
-    messageUnreadCount: state => [], //state.messageUnreadList.length,
-    messageReadedCount: state => [], //state.messageReadedList.length,
-    messageTrashCount: state => [], //state.messageTrashList.length,
-    billerId: state => state.billerId
+    messageUnreadCount: (state) => [], //state.messageUnreadList.length,
+    messageReadedCount: (state) => [], //state.messageReadedList.length,
+    messageTrashCount: (state) => [], //state.messageTrashList.length,
+    billerId: (state) => state.billerId,
+    personId: (state) => state.personId,
+    partnerId: (state) => state.partnerId,
   },
   actions: {
     // 登录
@@ -100,9 +110,9 @@ export default {
       return new Promise((resolve, reject) => {
         login({
           userName,
-          password
+          password,
         })
-          .then(res => {
+          .then((res) => {
             const data = res.data;
             if (data.code === 200 && data && data.data) {
               setTagNavListInLocalstorage([]);
@@ -111,7 +121,7 @@ export default {
             }
             resolve(res);
           })
-          .catch(err => {
+          .catch((err) => {
             reject(err);
           });
       });
@@ -146,12 +156,14 @@ export default {
       return new Promise((resolve, reject) => {
         try {
           getUserInfo(state.token)
-            .then(res => {
+            .then((res) => {
               const data = res.data.data;
               commit("setAvator", data.avator);
               commit("setUserName", data.user_name);
               commit("setUserGuid", data.user_guid);
-              commit("setBillerId", data.billerId);
+              commit("setBillerId", data.billerId || "-1");
+              commit("setPersonId", data.personId || "-1");
+              commit("setPartnerId", data.partnerId || "-1");
               commit("setAccess", data.access);
               //commit('setPages', getUnion(data.pages, staticRouters))
               commit("setPermissions", data.permissions);
@@ -159,7 +171,7 @@ export default {
               commit("setHasGetInfo", true);
               resolve(data);
             })
-            .catch(err => {
+            .catch((err) => {
               reject(err);
             });
         } catch (error) {
@@ -169,7 +181,7 @@ export default {
     },
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
     getUnreadMessageCount({ state, commit }) {
-      getUnreadCount().then(res => {
+      getUnreadCount().then((res) => {
         const { data } = res;
         commit("setMessageCount", data);
       });
@@ -178,7 +190,7 @@ export default {
     getMessageList({ state, commit }) {
       return new Promise((resolve, reject) => {
         getMessage()
-          .then(res => {
+          .then((res) => {
             const { unread, readed, trash } = res.data.data;
             commit(
               "setMessageUnreadList",
@@ -189,7 +201,7 @@ export default {
             commit(
               "setMessageReadedList",
               readed
-                .map(_ => {
+                .map((_) => {
                   _.loading = false;
                   return _;
                 })
@@ -200,7 +212,7 @@ export default {
             commit(
               "setMessageTrashList",
               trash
-                .map(_ => {
+                .map((_) => {
                   _.loading = false;
                   return _;
                 })
@@ -210,7 +222,7 @@ export default {
             );
             resolve();
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
@@ -222,11 +234,11 @@ export default {
         if (contentItem) {
           resolve(contentItem);
         } else {
-          getContentByMsgId(msg_id).then(res => {
+          getContentByMsgId(msg_id).then((res) => {
             const content = res.data.data;
             commit("updateMessageContentStore", {
               msg_id,
-              content
+              content,
             });
             resolve(content);
           });
@@ -241,12 +253,12 @@ export default {
             commit("moveMsg", {
               from: "messageUnreadList",
               to: "messageReadedList",
-              msg_id
+              msg_id,
             });
             commit("setMessageCount", state.unreadCount - 1);
             resolve();
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
@@ -259,11 +271,11 @@ export default {
             commit("moveMsg", {
               from: "messageReadedList",
               to: "messageTrashList",
-              msg_id
+              msg_id,
             });
             resolve();
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
@@ -276,14 +288,14 @@ export default {
             commit("moveMsg", {
               from: "messageTrashList",
               to: "messageReadedList",
-              msg_id
+              msg_id,
             });
             resolve();
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       });
-    }
-  }
+    },
+  },
 };

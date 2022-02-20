@@ -1,13 +1,30 @@
 <template>
   <div class="dnc-table-wrap">
     <slot name="search">
-      <div v-if="searchable && searchPlace === 'top'" class="search-con search-con-top">
-          <Select v-model="searchKey" class="search-col">
-            <Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
-          </Select>
-          <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-          <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
-        </div>
+      <div
+        v-if="searchable && searchPlace === 'top'"
+        class="search-con search-con-top"
+      >
+        <Select v-model="searchKey" class="search-col">
+          <Option
+            v-for="item in columns"
+            v-if="item.key !== 'handle'"
+            :value="item.key"
+            :key="`search-col-${item.key}`"
+            >{{ item.title }}</Option
+          >
+        </Select>
+        <Input
+          @on-change="handleClear"
+          clearable
+          placeholder="输入关键字搜索"
+          class="search-input"
+          v-model="searchValue"
+        />
+        <Button @click="handleSearch" class="search-btn" type="primary"
+          ><Icon type="search" />&nbsp;&nbsp;搜索</Button
+        >
+      </div>
     </slot>
 
     <Table
@@ -41,19 +58,54 @@
       <slot name="footer" slot="footer"></slot>
       <slot name="loading" slot="loading"></slot>
     </Table>
-    <Page :total="totalCount" :page-size="pageSize" size="small" show-elevator show-sizer show-total :page-size-opts="pageSizeOpts" @on-change="onPageChanged" @on-page-size-change="onPageSizeChanged">
+    <Page
+      v-if="page"
+      :total="totalCount"
+      :page-size="pageSize"
+      size="small"
+      show-elevator
+      show-sizer
+      show-total
+      :page-size-opts="pageSizeOpts"
+      @on-change="onPageChanged"
+      @on-page-size-change="onPageSizeChanged"
+    >
     </Page>
-  <div v-show="showRefreshButton" class="dnc-table-refresh-btn">
-    <Button size="small" shape="circle" icon="md-refresh"  @click="onRefresh" title="刷新"></Button>
-  </div>
-    <div v-if="searchable && searchPlace === 'bottom'" class="search-con search-con-top">
-      <Select v-model="searchKey" class="search-col">
-        <Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
-      </Select>
-      <Input placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-      <Button class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
+    <div v-show="showRefreshButton" class="dnc-table-refresh-btn">
+      <Button
+        size="small"
+        shape="circle"
+        icon="md-refresh"
+        @click="onRefresh"
+        title="刷新"
+      ></Button>
     </div>
-    <a id="hrefToExportTable" style="display: none;width: 0px;height: 0px;"></a>
+    <div
+      v-if="searchable && searchPlace === 'bottom'"
+      class="search-con search-con-top"
+    >
+      <Select v-model="searchKey" class="search-col">
+        <Option
+          v-for="item in columns"
+          v-if="item.key !== 'handle'"
+          :value="item.key"
+          :key="`search-col-${item.key}`"
+          >{{ item.title }}</Option
+        >
+      </Select>
+      <Input
+        placeholder="输入关键字搜索"
+        class="search-input"
+        v-model="searchValue"
+      />
+      <Button class="search-btn" type="primary"
+        ><Icon type="search" />&nbsp;&nbsp;搜索</Button
+      >
+    </div>
+    <a
+      id="hrefToExportTable"
+      style="display: none; width: 0px; height: 0px"
+    ></a>
   </div>
 </template>
 
@@ -68,98 +120,102 @@ export default {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     columns: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     size: String,
     width: {
-      type: [Number, String]
+      type: [Number, String],
     },
     height: {
-      type: [Number, String]
+      type: [Number, String],
     },
     stripe: {
       type: Boolean,
-      default: false
+      default: false,
     },
     border: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showHeader: {
       type: Boolean,
-      default: true
+      default: true,
     },
     highlightRow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     rowClassName: {
       type: Function,
       default() {
         return "";
-      }
+      },
     },
     context: {
-      type: Object
+      type: Object,
     },
     noDataText: {
-      type: String
+      type: String,
     },
     noFilteredDataText: {
-      type: String
+      type: String,
     },
     disabledHover: {
-      type: Boolean
+      type: Boolean,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * @description 全局设置是否可编辑
      */
     editable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * @description 是否可搜索
      */
     searchable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * @description 搜索控件所在位置，'top' / 'bottom'
      */
     searchPlace: {
       type: String,
-      default: "top"
+      default: "top",
     },
     totalCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     pageSize: {
       type: Number,
-      default: 20
+      default: 20,
     },
     showRefreshButton: {
       type: Boolean,
-      default: false
+      default: false,
     },
     pageSizeOpts: {
       type: Array,
       default() {
         return [5, 10, 20, 30, 40, 50, 100, 200, 500];
-      }
-    }
+      },
+    },
+    page: {
+      type: Boolean,
+      default: true,
+    },
   },
   /**
    * Events
@@ -174,7 +230,7 @@ export default {
       edittingCellId: "",
       edittingText: "",
       searchValue: "",
-      searchKey: ""
+      searchKey: "",
     };
   },
   methods: {
@@ -185,34 +241,31 @@ export default {
             params: params,
             value: this.insideTableData[params.index][params.column.key],
             edittingCellId: this.edittingCellId,
-            editable: this.editable
+            editable: this.editable,
           },
           on: {
-            input: val => {
+            input: (val) => {
               this.edittingText = val;
             },
-            "on-start-edit": params => {
-              this.edittingCellId = `editting-${params.index}-${
-                params.column.key
-              }`;
+            "on-start-edit": (params) => {
+              this.edittingCellId = `editting-${params.index}-${params.column.key}`;
               this.$emit("on-start-edit", params);
             },
-            "on-cancel-edit": params => {
+            "on-cancel-edit": (params) => {
               this.edittingCellId = "";
               this.$emit("on-cancel-edit", params);
             },
-            "on-save-edit": params => {
-              this.value[params.row.initRowIndex][
-                params.column.key
-              ] = this.edittingText;
+            "on-save-edit": (params) => {
+              this.value[params.row.initRowIndex][params.column.key] =
+                this.edittingText;
               this.$emit("input", this.value);
               this.$emit(
                 "on-save-edit",
                 Object.assign(params, { value: this.edittingText })
               );
               this.edittingCellId = "";
-            }
-          }
+            },
+          },
         });
       };
       return item;
@@ -220,13 +273,16 @@ export default {
     surportHandle(item) {
       let options = item.options || [];
       let insideBtns = [];
-      options.forEach(item => {
+      options.forEach((item) => {
         if (handleBtns[item]) insideBtns.push(handleBtns[item]);
       });
       let btns = item.button ? [].concat(insideBtns, item.button) : insideBtns;
       item.render = (h, params) => {
         params.tableData = this.value;
-        return h("div", btns.map(item => item(h, params, this)));
+        return h(
+          "div",
+          btns.map((item) => item(h, params, this))
+        );
       };
       return item;
     },
@@ -243,15 +299,17 @@ export default {
         this.columns[0].key !== "handle"
           ? this.columns[0].key
           : this.columns.length > 1
-            ? this.columns[1].key
-            : "";
+          ? this.columns[1].key
+          : "";
     },
     handleClear(e) {
       if (e.target.value === "") this.insideTableData = this.value;
     },
     handleSearch() {
-      this.insideTableData = this.value.filter(
-         item => item[this.searchKey] ? (item[this.searchKey].indexOf(this.searchValue) > -1) : false
+      this.insideTableData = this.value.filter((item) =>
+        item[this.searchKey]
+          ? item[this.searchKey].indexOf(this.searchValue) > -1
+          : false
       );
     },
     handleTableData() {
@@ -305,7 +363,7 @@ export default {
     },
     onPageSizeChanged(pageSize) {
       this.$emit("on-page-size-change", pageSize);
-    }
+    },
   },
   watch: {
     columns(columns) {
@@ -315,12 +373,12 @@ export default {
     value(val) {
       this.handleTableData();
       this.handleSearch();
-    }
+    },
   },
   mounted() {
     this.handleColumns(this.columns);
     this.setDefaultSearchKey();
     this.handleTableData();
-  }
+  },
 };
 </script>

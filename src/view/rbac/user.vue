@@ -87,8 +87,8 @@
           <Col span="12">
           <FormItem label="用户状态" label-position="left">
             <!-- <RadioGroup v-model="formModel.fields.status" type="button">
-                                <Radio v-for="item in stores.user.sources.statusFormSources" :label="item.text" :key="item.value"></Radio>
-                </RadioGroup>-->
+                                  <Radio v-for="item in stores.user.sources.statusFormSources" :label="item.text" :key="item.value"></Radio>
+                  </RadioGroup>-->
             <i-switch size="large" v-model="formModel.fields.status" :true-value="1" :false-value="0">
               <span slot="open">正常</span>
               <span slot="close">禁用</span>
@@ -97,7 +97,7 @@
           </Col>
         </Row>
         <FormItem label="备注" label-position="top">
-          <Input type="textarea" v-model="formModel.fields.desc" :rows="4" placeholder="用户备注信息" />
+          <Input type="textarea" v-model="formModel.fields.description" :rows="4" placeholder="用户备注信息" />
         </FormItem>
       </Form>
       <div class="demo-drawer-footer">
@@ -159,6 +159,7 @@ export default {
           isLocked: 0,
           status: 1,
           isDeleted: 0,
+          description: "",
           createdOn: null,
           createdByUserGuid: "",
           createdByUserName: "",

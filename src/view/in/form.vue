@@ -227,7 +227,8 @@ export default {
         ]),
         getInvList(clsId) {
             queryInvPrice({
-                clsId
+                clsId,
+                billId: this.$route.query.id == void 0 ? -1 : this.$route.query.id
             }).then(({ data: { code, data, message } }) => {
                 if (code == 200) {
                     this.height = document.querySelector('.content-wrapper').offsetHeight - 64 * 2
@@ -280,7 +281,8 @@ export default {
                                 billerId: this.billerId,
                                 id: this.$route.query.id,
                                 startDate: this.startDateStr,
-                                endDate: this.endDateStr
+                                endDate: this.endDateStr,
+                                clsId: this.curInvClsId
                             },
                             inquiryEntry: this.formData,
                             context: [{ name: `${billNo}_ShopCar`, entry: this.tableData }]
@@ -317,7 +319,8 @@ export default {
                         billerId: this.billerId,
                         billNo,
                         startDate: this.startDateStr,
-                        endDate: this.endDateStr
+                        endDate: this.endDateStr,
+                        clsId: this.curInvClsId
                     },
                     inquiryEntry: this.formData,
                     context: [{ name: `${billNo}_ShopCar`, entry: this.tableData }]
