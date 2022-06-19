@@ -22,7 +22,7 @@ export const initRouter = (vm) => {
     url: 'account/menu',
     method: 'get'
   }).then(res => {
-    var menuData = res.data
+    var menuData = res.data.filter((f) => f.allowPC == 1);
     // 格式化菜单
     list = formatMenu(menuData)
     // 刷新界面菜单
@@ -40,7 +40,7 @@ export const loadMenu = () => {
     url: 'account/menu',
     method: 'get'
   }).then(res => {
-    var menuData = res.data
+    var menuData = res.data.filter((f) => f.allowPC == 1);
     // 这是后端回传给前端的数据，如上面所说的
     // 格式化菜单
     list = formatMenu(menuData)

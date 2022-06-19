@@ -7,7 +7,7 @@
         v-if="curBillNo != ''"
       >
         <Col span="2"> 单号 </Col>
-        <Col span="3">
+        <Col span="4">
           <Input v-model="curBillNo" readonly />
         </Col>
       </Row>
@@ -336,12 +336,19 @@ export default {
         if (this.$route.query.id) {
           loadAsk({ id: this.$route.query.id, partnerId: this.partnerId }).then(
             ({ data: { code, data, message } }) => {
-              this.curInvClsId = data[0]["clsId"];
-              this.curBillNo = data[0]["billNo"];
-              this.isAuditDone = data[0]["status"] == 1;
-              this.startDate = new Date(data[0]["startDate"]);
-              this.endDate = new Date(data[0]["endDate"]);
-              this.validInvs = Array.from(new Set(data.map((m) => m.invId)));
+              if (data.length > 0) {
+                this.curInvClsId = data[0]["clsId"];
+                this.curBillNo = data[0]["displayBillNo"];
+                this.isAuditDone = data[0]["status"] == 1;
+                this.startDate = new Date(data[0]["startDate"]);
+                this.endDate = new Date(data[0]["endDate"]);
+                this.validInvs = Array.from(new Set(data.map((m) => m.invId)));
+              } else {
+                this.$Modal.error({
+                  title: "提示",
+                  content: '没有查询到报价信息',
+                });
+              }
             }
           );
         }

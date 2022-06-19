@@ -138,7 +138,7 @@ export default {
             { type: "selection", width: 50, key: "handle" },
             {
               title: "单号",
-              key: "billNo",
+              key: "displayBillNo",
               width: 120,
               sortable: true,
               align: "center",

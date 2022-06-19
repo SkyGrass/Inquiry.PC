@@ -237,6 +237,7 @@ export default {
         })
       ).then((res) => {
         this.stores.subsummery.data = res.data.data.map((m) => {
+          m.date = dayjs(m.date).format( "YYYY-MM-DD")
           return m;
         });
         this.stores.subsummery.query.totalCount = res.data.totalCount;

@@ -6,9 +6,13 @@
         style="line-height: 32px; padding: 5px"
         v-if="curBillNo != ''"
       >
-        <Col span="2"> 单号 </Col>
+        <Col span="2" v-if="false"> 预单号 </Col>
         <Col span="3">
           <Input v-model="curBillNo" readonly />
+        </Col>
+        <Col span="2"> 单号 </Col>
+        <Col span="4">
+          <Input v-model="displayBillNo" readonly />
         </Col>
       </Row>
       <Row :gutter="16" style="line-height: 32px; padding: 5px">
@@ -129,6 +133,7 @@ export default {
       columnsDynamic: [],
       tableData: [],
       curBillNo: "",
+      displayBillNo: "",
       validInvs: [],
       isAuditDone: false,
     };
@@ -265,10 +270,9 @@ export default {
           if (code == 200) {
             this.tableData.forEach((row, index) => {
               const t = data.filter((f) => f.invId == row.id);
-
               t.forEach((tt) => {
                 row["p_current_price_" + tt.partnerId] = tt.priceCurrent;
-                row["p_last_price_" + tt.partnerId] = tt.priceCurrentConfirm;
+                row["p_last_price_" + tt.partnerId] = tt.priceLastConfirm; //tt.priceCurrentConfirm;
               });
               const _confirmPrice = t
                 .map((m) => m.priceCurrentConfirm)
@@ -376,6 +380,7 @@ export default {
             ({ data: { code, data, message } }) => {
               this.curInvClsId = data[0]["clsId"];
               this.curBillNo = data[0]["billNo"];
+              this.curDisplayBillNo = data[0]["displayBillNo"];
               this.isAuditDone = data[0]["status"] == 1;
               this.startDate = new Date(data[0]["startDate"]);
               this.endDate = new Date(data[0]["endDate"]);
